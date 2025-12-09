@@ -1,0 +1,119 @@
+const {
+  createAd,
+  getAllAds,
+  getAdById,
+  updateAd,
+  deleteAd,
+  getCategories,
+} = require('../models/ads');
+
+exports.postAd = async (req, res) => {
+  try {
+    const ad = await createAd({
+      owner_id:    req.user.id,          
+      title:       req.body.title,
+      description: req.body.description,
+      category:    req.body.category ?? null,
+      location:    req.body.location ?? null,
+      image_url:   req.file ? '/uploads/' + req.file.filename : null,
+      price:       req.body.price ?? null,
+    });
+    res.status(201).json(ad);
+  } catch (err) {
+    console.error('Greška u postAd:', err);
+    res.status(500).json({ message: 'Greška pri kreiranju oglasa.' });
+  }
+};
+
+exports.getAds = async (req, res) => {
+  try {
+    const ads = await getAllAds();
+    res.json(ads);
+  } catch (err) {
+    console.error('Greška u getAds:', err);
+    res.status(500).json({ message: 'Greška pri dohvatu oglasa.' });
+  }
+};
+
+exports.getCategories = async (req, res) => {
+  try {
+    const categories= [
+      {
+        name: "Auto i Transport",
+        subcategories: ["Automehaničar", "Autoelektričar", "Auto limar", "Vulkanizer", "Autolakirer", "Šlep Služba"]
+      },
+      {
+        name: "Građevina",
+        subcategories: ["Zidar", "Keramičar", "Tesar", "Krovopokrivač", "Armirač", "Moler / Farbar", "Fasadni radnik", "Izolater", "Gipsar"]
+      },
+      {
+        name: "Elektrika",
+        subcategories: ["Električar", "Elektroinstalater", "Serviser bijele tehnike", "Klima majstor", "Serviser TV-a i elektronike", "Antenski serviser", "Video nadzor / Alarm sistemi", "IT serviser"]
+      },
+      {
+        name: "Vodoinstalacaije",
+        subcategories: ["Vodoinstalater", "Servis bojlera / kotlova", "Centralno grijanje (montaža i održavanje", "Plinoinstalater"]
+      },
+      {
+        name: "Drvoprerada",
+        subcategories: ["Stolar", "Tapetar", "Montaža kuhinja / plakara / ormara", "Ugradnja sobnih vrata", "Parketar"]
+      },
+      {
+        name: "Čišćenje i održavanje",
+        subcategories: ["Čistačica", "Održavanje zgrada / haustora", "Servis za pranje tepiha", "Deratizacija"]
+      },
+      {
+        name: "Ostale kategorije",
+        subcategories: ["Bravar", "Varioc", "Kamenorezac", "Kućni majstor", "Rukovodilac bagerom", "Majstor za namještaj po mjeri", "Kuhar za privatna slavlja", "Izrada konstrukcija"]
+      }
+    ];
+
+    res.json({categories});
+  } catch (err) {
+    console.error('Greška u getCategories:', err);
+    res.status(500).json({ message: 'Greška pri dohvatu kategorija.' });
+  }
+};
+
+
+exports.getAdById = async (req, res) => {
+  try {
+    const ad = await getAdById(req.params.id);
+    if (!ad) return res.status(404).json({ message: 'Nije pronađen oglas.' });
+    res.json(ad);
+  } catch (err) {
+    console.error('Greška u getAdById:', err);
+    res.status(500).json({ message: 'Greška pri dohvatu oglasa.' });
+  }
+};
+
+exports.updateAd = async (req, res) => {
+  try {
+    const ad = await updateAd({
+      id:          req.params.id,
+      owner_id:    req.user.id,
+      title:       req.body.title,
+      description: req.body.description,
+      category:    req.body.category ?? null,
+      location:    req.body.location ?? null,
+      image_url:   req.body.image_url ?? null,
+      price:       req.body.price ?? null,
+    });
+    if (!ad) return res.status(404).json({ message: 'Oglas nije pronađen ili nije tvoj.' });
+    res.json(ad);
+  } catch (err) {
+    console.error('Greška u updateAd:', err);
+    res.status(500).json({ message: 'Greška pri ažuriranju oglasa.' });
+  }
+};
+
+exports.deleteAd = async (req, res) => {
+  try {
+    const row = await deleteAd({ id: req.params.id, owner_id: req.user.id });
+    if (!row) return res.status(404).json({ message: 'Oglas nije pronađen ili nije tvoj.' });
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Greška u deleteAd:', err);
+    res.status(500).json({ message: 'Greška pri brisanju oglasa.' });
+  }
+};
