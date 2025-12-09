@@ -13,65 +13,67 @@ function formatDate(iso) {
   });
 }
 
+
 function FavoriteCard({ ad }) {
+  const city = ad?.location?.split(">").pop()?.trim() || "";
+
   return (
     <Link
       to={`/ads/${ad.id}`}
       className="group relative flex flex-col overflow-hidden rounded-2xl
-                border border-slate-800/70 bg-gradient-to-br from slate-900 via-slate-950 to-slate-900
+                border border-blue-400 bg-gradient-to-br from accent-blue-200 via-blue-200 to-blue-300
                 shadow-[0_18px_40px_rgba(15,23,42,0.75)]
                 transition-all duration-300
-                hover:-translate-y-1 hover:border-pink-500/70 hover:shadow-[0_25px_60px_rgba(236,72,153,0.55)]"
+                hover:-translate-y-1 hover:border-blue-400 hover:shadow-[0_25px_60px_rgba(59,130,246,0.55)]"
     >
       {/* gornji badge bar */}
       <div className="flex items-center justify-between gap-2 border-b border-white/5 px-5 py-3">
-        <span className="inline-flex items-center gap-2 rounded-full bg-pink-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-pink-300">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-pink-400" />
+        <span className="inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-900">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-600" />
           Omiljeni oglas
         </span>
-        <span className="text-[11px] text-slate-400">
-          ID: <span className="font-mono text-slate-200">#{ad.id}</span>
+        <span className="text-[11px] text-slate-950">
+          ID: <span className="font-mono text-slate-950">#{ad.id}</span>
         </span>
       </div>
 
       {/* sadrzaj kartice */}
       <div className="flex flex-1 flex-col px-5 pb-5 pt-4">
-        <h2 className="mb-1 line-clamp-2 text-lg font-semibold text-slate-50 group-hover:text-pink-300">
+        <h2 className="mb-1 line-clamp-2 text-lg font-semibold text-slate-950 group-hover:text-blue-400">
           {ad.title}
         </h2>
 
         <div className="mb-3 flex flex-wrap items-center gap-2 text-xs text-slate-400">
           {ad.category && (
-            <span className="rounded-full bg-slate-800/80 px-2.5 py-1 text-[11px] font-medium text-slate-200">
-              {ad.category_name}
+            <span className="rounded-full bg-slate-800/80 px-2.5 py-1 text-[11px] font-medium text-slate-300">
+              {ad.category}
             </span>
           )}
-          {ad.city && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-800/60 px-2.5 py-1 text-[11px]">
-              <span className="text-pink-300">📍</span>
-              {ad.city}
+          {city && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-2.5 py-1 text-[11px]">
+              <span className="text-slate-300 font-medium">{city}</span>
             </span>
           )}
           {ad.created_at && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-2.5 py-1 text-[11px] text-slate-300">
+            <span className="inline-flex items-center gap-1 rounded-full bg-slate-900/80 font-medium px-2.5 py-1 text-[11px] text-slate-300">
               {formatDate(ad.created_at)}
             </span>
           )}
         </div>
 
         {ad.description && (
-          <p className="mb-4 line-clamp-3 text-sm text-slate-300/90">{ad.description}</p>
+          <p className="mb-4 line-clamp-3 text-sm text-gray-700">{ad.description}</p>
         )}
 
         <div className="mt-auto flex items-center justify-between pt-1 text-sm">
-          <div className="inline-flex items-center gap-2 text-pink-300">
+          <div className="inline-flex items-center gap-2 text-slate-950">
             <span className="text-lg leading-none">❤️</span>
-            <span className="text-xs uppercase tracking-wide">Ostavljeno u omiljenim</span>
+            <span className="text-xs tracking-wide">Ostavljeno u omiljenim</span>
           </div>
           <span
-            className="inline-flex items-center gap-2 rounded-full border border-pink-500/60
-                      bg-pink-500/10 px-3 py-1 text-xs font-semibold text-pink-200
-                      transition-colors duration-200 group-hover:bg-pink-500/20"
+            className="inline-flex items-center gap-2 rounded-full border border-blue-500/10
+                      bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-900
+                      transition-colors duration-200 group-hover:bg-blue-400"
           >
             Pogledaj oglas
             <span className="translate-y-px text-sm">↗</span>
@@ -136,7 +138,7 @@ export default function FavoritesPage() {
 
         <div className="flex items-center gap-2 text-sm">
           <span className="rounded-full bg-slate-900/90 px-3 py-1 text-xs font-medium text-slate-300">
-            Ukupno: <span className="font-semibold text-pink-300">{items.length}</span>
+            Ukupno: <span className="font-semibold text-slate-300">{items.length}</span>
           </span>
         </div>
       </div>
@@ -165,8 +167,8 @@ export default function FavoritesPage() {
           </p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 rounded-full bg-pink-500 px-5 py-2.5
-            text-sm font-semibold text-white shadow-lg shadow-pink-500/30
+            className="inline-flex items-center gap-2 rounded-full bg-blue-400 px-5 py-2.5
+            text-sm font-semibold text-white shadow-lg shadow-pink-500/30ow
             transition-transform duration-150 hover:-translate-y-0.5"
           >
             Pogledaj oglase
