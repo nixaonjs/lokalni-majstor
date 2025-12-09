@@ -108,9 +108,13 @@ Follow the steps below to run the project locally.
 
 ### 1️⃣ Clone the Repository
 
-``git clone https://github.com/andjelicn/lokalni-majstor.git``
+```bash
+git clone https://github.com/andjelicn/lokalni-majstor.git
+```
 
-``cd lokalni-majstor``
+```bash
+cd lokalni-majstor
+```bash
 
 Backend Setup
 ```bash
