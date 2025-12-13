@@ -121,7 +121,7 @@ git clone https://github.com/andjelicn/lokalni-majstor.git
 cd lokalni-majstor
 ```
 
-Backend Setup
+2️⃣ Backend Setup
 
 ```bash
 cd backend
