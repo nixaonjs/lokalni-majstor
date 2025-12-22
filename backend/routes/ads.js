@@ -139,6 +139,32 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/my", verifyToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const sql = `
+        SELECT 
+        id,
+        title,
+        description,
+        location,
+        category,
+        image_Url,
+        created_at
+        FROM ads
+        WHERE owner_id = $1
+        ORDER BY created_at DESC
+        `;
+
+        const { rows } = await pool.query(sql, [userId]);
+        return res.json(rows);
+    }   catch (err) {
+        console.error("GET /api/ads/my error:", err);
+        res.status(500).json({ message: "Greska na serveru." });
+    }
+});
+
 router.get("/categories", adsController.getCategories);
 
 router.get("/:id", adsController.getAdById);
