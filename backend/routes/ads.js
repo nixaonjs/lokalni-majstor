@@ -118,6 +118,7 @@ router.get("/", async (req, res) => {
       SELECT a.*, COUNT(*) OVER() AS __total
       FROM ads a
       ${whereSql}
+      WHERE status = 'active'
       ORDER BY a.created_at DESC
       LIMIT $${p++} OFFSET $${p++};
     `;
@@ -149,11 +150,12 @@ router.get("/my", verifyToken, async (req, res) => {
         title,
         description,
         location,
+        status,
         category,
         image_Url,
         created_at
         FROM ads
-        WHERE owner_id = $1
+        WHERE owner_id = $1 
         ORDER BY created_at DESC
         `;
 
@@ -168,7 +170,11 @@ router.get("/my", verifyToken, async (req, res) => {
 router.get("/categories", adsController.getCategories);
 
 router.get("/:id", adsController.getAdById);
+
 router.put("/:id", verifyToken, adsController.updateAd);
+
+router.patch("/:id/status", verifyToken, adsController.updateAdStatus);
+
 router.delete("/:id", verifyToken, adsController.deleteAd);
 
 module.exports = router;

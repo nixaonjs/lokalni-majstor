@@ -33,7 +33,7 @@ router.get("/full", async (req, res) => {
     const sql = `
         SELECT a.*
         FROM favorites f
-        JOIN ads a ON a.id = f.ad_id
+        JOIN ads a ON a.id = f.ad_id AND a.status = 'active'
         WHERE f.user_id = $1
         ORDER BY f.created_at DESC `;
 

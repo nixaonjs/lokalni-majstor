@@ -39,7 +39,7 @@ export default function HomePage() {
             onClick={() => navigate("/ads/new")}
             className="rounded-lg font-semibold bg-sky-500 px-4 py-2 text-white hover:bg-sky-500"
           >
-            Novi oglas
+            + Novi oglas
           </button>
         </div>
       </div>

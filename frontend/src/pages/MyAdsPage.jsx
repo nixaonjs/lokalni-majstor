@@ -94,6 +94,35 @@ export default function MyAdsPage() {
     }
   };
 
+  const toggleStatus = async (ad) => {
+    const nextStatus = ad.status === 'active' ? 'paused' : 'active';
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const res = await fetch(`${API_URL}/api/ads/${ad.id}/status`, {
+        method: "PATCH",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ status: nextStatus }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.message || "Greska pri promjeni statusa oglasa.");
+    }
+      const updated = await res.json();
+
+      setAds((prev) =>
+        prev.map((x) => (x.id === ad.id ? { ...x, status: updated.status } : x)),
+        );
+      } catch (e) {
+        alert(e.message || "Greska pri promjeni statusa oglasa.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-6xl px-4 py-8">
@@ -206,6 +235,17 @@ export default function MyAdsPage() {
                   </div>
 
                   {/* Content */}
+                  <span
+                    className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-semibold
+                      ${
+                        ad.status === "active"
+                          ? "border-emerald-500/30 bg-emerald-500/15 text-emerald-200"
+                          : "border-emerald-500/30 bg-amber-500/15 text-amber-200"
+                      }`}
+                    >
+                      {ad.status === "active" ? "Aktivan" : "Pauziran"}
+                  </span>
+
                   <div className="p-4">
                     <h3 className="line-clamp-2 text-base font-semibold text-slate-700">
                       {ad.title}
@@ -265,6 +305,13 @@ export default function MyAdsPage() {
                           className="rounded-xl border border-red-400 px-3 py-1.5 text-xs font-semibold text-red-400 hover:border-white"
                         >
                           Obriši
+                        </button>
+
+                        <button
+                          onClick={() => toggleStatus(ad)}
+                          className="rounded-xl border border-amber-400 px-3 py-1.5 text-xs font-semibold text-amber-400 hover:border-white"
+                          >
+                            {ad.status === "active" ? "Pauziraj" : "Aktiviraj"}
                         </button>
                       </div>
                     </div>

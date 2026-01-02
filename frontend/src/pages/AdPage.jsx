@@ -337,7 +337,7 @@ export default function AdPage() {
                     <div className="max-w-5xl mx-auto text-sm text-slate-600 flex flex-wrap gap-4">
                         <div>
                             <strong>Majstor:</strong>{" "}
-                            {ad.owner_name || ad.owner_email || "Nepoznato"}
+                            {user.name || user.email || "Nepoznato"}
                         </div>
                         {ad.price && (
                             <div>

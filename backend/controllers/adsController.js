@@ -1,10 +1,11 @@
 const {
   createAd,
   getAllAds,
-  getAdById,
-  updateAd,
+  getAdById: getAdByIdModel,
+  updateAd: updateAdModel,
   deleteAd,
   getCategories,
+  updateAdStatus: updateAdStatusModel,
 } = require('../models/ads');
 
 exports.postAd = async (req, res) => {
@@ -78,7 +79,7 @@ exports.getCategories = async (req, res) => {
 
 exports.getAdById = async (req, res) => {
   try {
-    const ad = await getAdById(req.params.id);
+    const ad = await getAdByIdModel(req.params.id);
     if (!ad) return res.status(404).json({ message: 'Nije pronađen oglas.' });
     res.json(ad);
   } catch (err) {
@@ -89,7 +90,7 @@ exports.getAdById = async (req, res) => {
 
 exports.updateAd = async (req, res) => {
   try {
-    const ad = await updateAd({
+    const ad = await updateAdModel({
       id:          req.params.id,
       owner_id:    req.user.id,
       title:       req.body.title,
@@ -98,7 +99,9 @@ exports.updateAd = async (req, res) => {
       location:    req.body.location ?? null,
       image_url:   req.body.image_url ?? null,
       price:       req.body.price ?? null,
+      status:     req.body.status ?? null,
     });
+
     if (!ad) return res.status(404).json({ message: 'Oglas nije pronađen ili nije tvoj.' });
     res.json(ad);
   } catch (err) {
@@ -116,4 +119,29 @@ exports.deleteAd = async (req, res) => {
     console.error('Greška u deleteAd:', err);
     res.status(500).json({ message: 'Greška pri brisanju oglasa.' });
   }
+};
+
+
+exports.updateAdStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+
+        if (!["active", "paused"].includes(status)) {
+            return res.status(400).json({ message: "Neispravan status." });
+        }
+
+        const row = await updateAdStatusModel({
+            id: req.params.id,
+            owner_id: req.user.id,
+            status,
+        });
+
+        if (!row) return res.status(404).json({ message: "Oglas nije pronadjen ili nije tvoj" });
+
+        res.json(row);
+    }   catch (err) {
+        console.error("Greska u updateAdStatus:", err);
+        res.status(500).json({ message: "Greska pri promjeni statusa" });
+    }
+
 };
