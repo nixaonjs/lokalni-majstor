@@ -12,8 +12,11 @@ api.interceptors.request.use(config => {
     return config;
 });
 
+export const BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:5000/api")
+  .replace('/api', '')
+
 export const getCategories = async () => {
-  const response = await axios.get('/api/ads/categories');
+  const response = await api.get('/api/ads/categories');
   return response.data.categories;
 };
 

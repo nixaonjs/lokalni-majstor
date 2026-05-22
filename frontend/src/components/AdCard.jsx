@@ -1,3 +1,4 @@
+import { BASE_URL} from "../services/api.js";
 export default function AdCard({ ad, onClick }) {
   const fullPath = ad.location || "";
   const city =
@@ -14,8 +15,8 @@ export default function AdCard({ ad, onClick }) {
           src={
             ad.image_url
               ? Array.isArray(ad.image_url)
-                ? `http://localhost:5000${ad.image_url[0]}`
-                : `http://localhost:5000${ad.image_url}`
+                ? `${BASE_URL}${ad.image_url[0]}`
+                : `${BASE_URL}${ad.image_url}`
               : "/logo-placeholder.png"
           }
           alt={ad.title}
