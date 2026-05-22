@@ -131,16 +131,17 @@ Install dependencies
 ```bash
 npm install
 ```
-Create an .env file:
+Create a .env file (copy from .env.example):
 
 ```bash
 
-``PORT=5000``
-
-``DATABASE_URL=your-postgresql-connection-string``
-
-``JWT_SECRET=your-secret-key``
-
+``PORT=5000
+DB_USER=your-postgres-username
+DB_HOST=localhost
+DB_NAME=lokalni_majstor
+DB_PASSWORD=your-postgres-password
+DB_PORT=5432
+JWT_SECRET=your-secret-key``
 ```
 Run database migrations or create required tables manually if 
 needed.
