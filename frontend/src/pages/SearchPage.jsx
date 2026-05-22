@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import api from "../services/api.js";
 import AdCard from "../components/AdCard";
 
 export default function SearchPage() {
@@ -13,12 +14,12 @@ export default function SearchPage() {
   useEffect(() => {
     setLoading(true);
     const url = q
-      ? `http://localhost:5000/api/ads?q=${encodeURIComponent(q)}`
-      : "http://localhost:5000/api/ads";
+      ? `/ads?q=${encodeURIComponent(q)}`
+      : "/ads";
 
-    fetch(url)
-      .then((r) => r.json())
-      .then((d) => {
+    api.get(url)
+      .then((r) => {
+      const d = r.data;
         if (d && Array.isArray(d.items)) {
           setData(d);
         } else if (Array.isArray(d)) {
