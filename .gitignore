@@ -22,11 +22,6 @@ build/
 .vscode/
 .idea/
 
-# Dependencies
-package-lock.json
-pnpm-lock.yaml
-yarn.lock
-
 # OS files
 .DS_Store
 Thumbs.db
