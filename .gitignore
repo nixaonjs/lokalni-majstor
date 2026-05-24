@@ -17,6 +17,8 @@ log.txt
 # Build
 dist/
 build/
+backend/uploads/*
+!backend/uploads/.gitkeep
 
 # IDE
 .vscode/
