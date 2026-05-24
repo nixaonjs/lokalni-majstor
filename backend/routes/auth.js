@@ -6,9 +6,17 @@ const authController = require('../controllers/authController');
 const pool = require('../models/db');
 const verifyToken = require('../middleware/auth');
 const transporter = require('../utils/mailer');
+const rateLimit = require('express-rate-limit');
 
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10, // max 10 attempts per IP per 15 minutes
+    message: {error: 'Previse pokusaja prijavljivanja, pokusajte ponovo kasnije.'},
+    standardHeaders: true,
+    legacyHeaders: false,
+})
 
-router.post('/register', async (req, res) => {
+router.post('/register', authLimiter, async (req, res) => {
     const { name, email, password } = req.body;
     const exists = await pool.query(
         'SELECT 1 FROM users WHERE email = $1',
@@ -55,7 +63,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/login', authController.login);
+router.post('/login', authLimiter, authController.login);
 
 router.get('/me', verifyToken, async (req, res) => {
   try {
