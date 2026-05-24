@@ -21,7 +21,7 @@ export default function LoginPage() {
       setUser(user);
       navigate('/');        
     } catch (errMsg) {
-      setError(errMsg || 'Greska pri prijavi.')
+      setError(errMsg.response?.data.message || 'Greska pri prijavi.')
     }
   }
 
