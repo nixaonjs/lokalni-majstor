@@ -1,4 +1,5 @@
 require('dotenv').config();
+const helmet = require('helmet');
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
@@ -6,10 +7,12 @@ const path = require('path');
 
 const app = express();
  app.use(express.json());
+ app.use(helmet());
  app.use(cors({
   origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "x-view-fingerprint"],
+
 }));
 
 const pool = new Pool({
