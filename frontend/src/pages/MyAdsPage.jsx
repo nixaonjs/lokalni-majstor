@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import api from "../services/api";
+import { BASE_URL} from "../services/api";
 
 function getCity(location) {
   return location?.split(">")?.pop()?.trim() || "";
@@ -14,7 +14,7 @@ function formatDate(iso) {
 
 function getImageSrc(ad) {
   if (!ad?.image_url) return null;
-  return ad.image_url.startsWith("http") ? ad.image_url : `${API_URL}${ad.image_url}`;
+  return ad.image_url.startsWith("http") ? ad.image_url : `${BASE_URL}${ad.image_url}`;
 }
 
 export default function MyAdsPage() {
@@ -31,26 +31,14 @@ export default function MyAdsPage() {
         setLoading(true);
         setErr("");
 
-        const token = localStorage.getItem("token");
-
-        const res = await fetch(`${API_URL}/api/ads/my`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data?.message || "Greška pri učitavanju oglasa.");
-        }
-
-        const data = await res.json();
+        const { data } = await api.get('/ads/my');
         setAds(Array.isArray(data) ? data : data.ad || []);
-      } catch (e) {
-        setErr(e.message || "Greška.");
-      } finally {
+        } catch (err) {
+          setErr(err.message || "Greska.");
+        } finally {
         setLoading(false);
       }
     };
-
     load();
   }, []);
 
@@ -76,21 +64,10 @@ export default function MyAdsPage() {
     if (!window.confirm("Obrisati oglas?")) return;
 
     try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(`${API_URL}/api/ads/${adId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data?.message || "Greška pri brisanju oglasa.");
-      }
-
-      setAds((prev) => prev.filter((ad) => ad.id !== adId));
+     await api.delete(`ads/${adId}`);
+     setAds((prev) => prev.filter((ad) => ad.id !== adId));
     } catch (e) {
-      alert(e.message || "Greška pri brisanju.");
+      alert(e.response?.data?.message || "Greska pri brisanju oglasa.");
     }
   };
 
@@ -98,28 +75,12 @@ export default function MyAdsPage() {
     const nextStatus = ad.status === 'active' ? 'paused' : 'active';
 
     try {
-      const token = localStorage.getItem("token");
-
-      const res = await fetch(`${API_URL}/api/ads/${ad.id}/status`, {
-        method: "PATCH",
-        headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ status: nextStatus }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data?.message || "Greska pri promjeni statusa oglasa.");
-    }
-      const updated = await res.json();
-
+      const { data: updated } = await api.patch(`/ads/${ad.id}/status`, { status: nextStatus });
       setAds((prev) =>
-        prev.map((x) => (x.id === ad.id ? { ...x, status: updated.status } : x)),
-        );
+        prev.map((x) => (x.id === ad.id ? { ...x, status: updated.status } : x ))
+      );
       } catch (e) {
-        alert(e.message || "Greska pri promjeni statusa oglasa.");
+      alert(e.response?.data?.message || "Greska pri promjeni statusa oglasa.");
     }
   };
 
