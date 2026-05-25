@@ -1,3 +1,5 @@
+const { z } = require('zod');
+const validate = require('../middleware/validate');
 const express = require("express");
 const router = express.Router();
 const verifyToken = require("../middleware/auth");
@@ -5,6 +7,17 @@ const multer = require("multer");
 const path = require("path");
 const pool = require("../models/db.js");
 const adsController = require("../controllers/adsController");
+
+
+
+// Zod
+const CreateAdSchema = z.object({
+    title: z.string().min(3).max(200),
+    main_category: z.string().min(1).optional(),
+    price: z.coerce.number().nonnegative().optional(),
+    description: z.string().optional(),
+    location: z.string().optional(),
+});
 
 // Multer storage
 const storage = multer.diskStorage({
@@ -17,7 +30,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // CREATE
-router.post("/", verifyToken, upload.single("image"), async (req, res) => {
+router.post("/", verifyToken, upload.single("image"), validate(CreateAdSchema), async (req, res) => {
   try {
     const { title, description, category, location, price } = req.body;
     const ownerId = req.user.id;
