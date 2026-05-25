@@ -21,7 +21,11 @@ export default function LoginPage() {
       setUser(user);
       navigate('/');        
     } catch (errMsg) {
+      if (errMsg.response?.status === 429) {
+        setError('Previse pokusaja prijave. Pokusajte ponovo za 15 minuta.');
+      } else {
       setError(errMsg.response?.data.message || 'Greska pri prijavi.')
+      }
     }
   }
 
