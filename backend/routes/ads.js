@@ -2,7 +2,7 @@ const { z } = require('zod');
 const validate = require('../middleware/validate');
 const express = require("express");
 const router = express.Router();
-const verifyToken = require("../middleware/auth");
+const { verifyToken, optionalToken } = require("../middleware/auth");
 const multer = require("multer");
 const path = require("path");
 const pool = require("../models/db.js");
@@ -203,6 +203,6 @@ router.patch("/:id/status", verifyToken, adsController.updateAdStatus);
 
 router.delete("/:id", verifyToken, adsController.deleteAd);
 
-router.post("/:id/view", verifyToken, adsController.registerAdView);
+router.post("/:id/view", optionalToken, adsController.registerAdView);
 
 module.exports = router;
