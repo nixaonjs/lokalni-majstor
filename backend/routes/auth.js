@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const authController = require('../controllers/authController');
 const pool = require('../models/db');
-const verifyToken = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const transporter = require('../utils/mailer');
 const rateLimit = require('express-rate-limit');
 
