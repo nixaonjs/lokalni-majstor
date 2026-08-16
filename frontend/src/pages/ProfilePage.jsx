@@ -23,6 +23,7 @@ export default function ProfilePage() {
                     : (Array.isArray(data?.items) ? data.items : [])
                 if (active) setAds(list);
             }   catch (e) {
+                console.error(e);
                 if (active) setErr("Greška pri učitavanju tvojih oglasa.");
             }   finally {
                 if (active) setLoading(false);
